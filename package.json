@@ -1,0 +1,81 @@
+{
+    "author": "WA1OUI",
+    "dependencies": {
+        "pebble-clay": "^1.0.2"
+    },
+    "keywords": [],
+    "name": "mainly-seconds",
+    "pebble": {
+        "capabilities": [
+            "configurable"
+        ],
+        "displayName": "Mainly Seconds",
+        "enableMultiJS": true,
+        "messageKeys": [
+            "PERSONALIZED_TEXT_KEY",
+            "DATE_FORMAT_KEY",
+            "BT_VIBRATE_KEY",
+            "LOW_BATTERY_KEY",
+            "BG_COLOR_KEY",
+            "TEXT_COLOR_KEY"
+        ],
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "file": "images/Personalize_Menu_Icon_Color.png",
+                    "name": "IMAGE_MENU_ICON",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "fonts/monaco.ttf",
+                    "name": "FONT_MONACO_19",
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/monaco.ttf",
+                    "name": "FONT_MONACO_22",
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/monaco.ttf",
+                    "name": "FONT_MONACO_24",
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/monaco.ttf",
+                    "name": "FONT_MONACO_26",
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/monaco.ttf",
+                    "name": "FONT_MONACO_30",
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/monaco.ttf",
+                    "name": "FONT_MONACO_37",
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/HelveNeuLig.ttf",
+                    "name": "FONT_HELV_NEW_LIGHT_20",
+                    "type": "font"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+        ],
+        "uuid": "68ca6996-29f8-4ca8-951a-a4fb179bc26b",
+        "watchapp": {
+            "watchface": true
+        }
+    },
+    "version": "1.0.0"
+}
