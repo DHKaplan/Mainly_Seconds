@@ -41,15 +41,15 @@ module.exports = [
         ]
     },
 
-         //****************
-    {
+      //****************
+ /*  {
         "type": "section",
         "items": [
             {
                 "type": "heading",
                 "defaultValue": "DATE FORMAT:"
             },
-            {
+           
                 "type": "radiogroup",
                 "messageKey": "DATE_FORMAT_KEY",
                 "label": "",
@@ -57,12 +57,12 @@ module.exports = [
                 "options": [
                     { "label": "Jun 5, 2016", "value": "0" },
                     { "label": "5 Jun 2016",  "value": "1" }
-                    
+                  ] 
                 ]
-            },
+            }, */
        //**********************
 
-            {
+           {
                 "type": "section",
                 "items": [
                     {
@@ -76,7 +76,7 @@ module.exports = [
                         "defaultValue": false
                     }
                 ]
-            },
+            }, 
          
         //******************
             {
@@ -95,28 +95,7 @@ module.exports = [
                 ]
             },
        
-            //****************************
-            {
-                "type": "section",
-                "items": [
-                    {
-                        "type": "heading",
-                        "defaultValue": ""
-                    },
-                    {
-                        "type": "input",
-                        "messageKey": "PERSONALIZED_TEXT_KEY",
-                        "defaultValue": "Enter Text",
-                        "label": "Personalized Text (11 Characters Maximum)",
-                        "description": "",
-                        "attributes": {
-                            "placeholder": "Enter Personalized Text",
-                             "maxlength": 11,
-
-                        }
-                    }
-                ]
-            },
+      
            
             // * * * 
             
@@ -130,8 +109,7 @@ module.exports = [
             },
             {
                 "type": "text",
-                "defaultValue": "Personalize By WA1OUI V5.2"
+                "defaultValue": "Mainly Seconds By WA1OUI V1.0"
             }
-        ]
-    }
+      
 ];

@@ -4,13 +4,13 @@ Window      *window;
 
 TextLayer   *text_time_layer;
 TextLayer   *text_battery_layer;
+TextLayer   *text_seconds_layer;
 
 Layer       *window_layer;
 
 Layer       *BTLayer;
 
 GFont        fontHelvNewLight20;
-GFont		     fontRobotoCondensed21;
 GFont        fontRobotoBoldSubset49;
 
 GRect        bluetooth_rect;
@@ -23,13 +23,10 @@ GPoint     Linepoint;
 static int BTConnected = 1;
 static int BTVibesDone = 0;
  
-static int  PersistBGColor        = 0;
-static int  PersistTextColor      = 0;
+static int  PersistBGColor        = 255;      //Blue Default
+static int  PersistTextColor      = 16777215; //White Default
 static int  PersistBTLoss         = 0;     // 0 = No Vib, 1 = Vib
 static int  PersistLow_Batt       = 0;     // 0 = No Vib, 1 = Vib
-
-static int FirstTime = 0;
-
 
 static char time_text[] = "00:00";
 static char seconds_text[] = "00";
@@ -208,26 +205,21 @@ void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
   // for twelve hour clock.
   if (!clock_is_24h_style() && (time_text[0] == '0')) {
        memmove(time_text, &time_text[1], sizeof(time_text) - 1);
-  }
-    
+  }  
 
-     //Always set time  *****************************************************
-  static char timeit[]="00:00:00";
-  strftime(timeit, sizeof(timeit), "%I:%M:%S", tick_time);
-      
-    
-     text_layer_set_text(text_time_layer, time_text); 
+ // static char timeit[]="00:00:00";
+ // strftime(timeit, sizeof(timeit), "%I:%M:%S", tick_time);
+
+  text_layer_set_text(text_time_layer, time_text); 
+  text_layer_set_text(text_seconds_layer, seconds_text);
   
-  FirstTime = 1; 
 }
 
 //Receive Input from Config html page: * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
   APP_LOG(APP_LOG_LEVEL_ERROR, "In Inbox received callback * * * * * * *");
-    
-  FirstTime = 0;
-  
+      
   #ifdef PBL_COLOR
           Tuple *BG_Color = dict_find(iterator, MESSAGE_KEY_BG_COLOR_KEY);     
             
@@ -255,6 +247,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
    
         text_layer_set_background_color(text_battery_layer, ColorHold);
         text_layer_set_background_color(text_time_layer, ColorHold);
+        text_layer_set_background_color(text_seconds_layer, ColorHold);
         window_set_background_color(window, ColorHold);
   
   //*****
@@ -289,6 +282,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         GTextColorHold = ColorHold;
      
         text_layer_set_text_color(text_battery_layer, ColorHold);
+        text_layer_set_text_color(text_seconds_layer, ColorHold);
         text_layer_set_text_color(text_time_layer, ColorHold);
   
   // For all items * * * * *
@@ -325,9 +319,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
                APP_LOG(APP_LOG_LEVEL_INFO, "    Added Default Vib on Low Batt: %d", PersistLow_Batt);
              }
       } 
-      
-  FirstTime = 0;
-}
+  }
 
 static void inbox_dropped_callback(AppMessageResult reason, void *context) {
   APP_LOG(APP_LOG_LEVEL_ERROR, "Inbox Message dropped!");
@@ -371,6 +363,9 @@ void handle_deinit(void) {
 void handle_init(void) {
   APP_LOG(APP_LOG_LEVEL_ERROR, "In Init... * * * * * * *");
   
+  fontHelvNewLight20 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_HELV_NEW_LIGHT_20));
+  fontRobotoBoldSubset49 = fonts_get_system_font(FONT_KEY_ROBOTO_BOLD_SUBSET_49);
+  
   //Set Default Colors
   if(persist_exists(MESSAGE_KEY_BG_COLOR_KEY)) {
      PersistBGColor = persist_read_int(MESSAGE_KEY_BG_COLOR_KEY); 
@@ -405,8 +400,6 @@ void handle_init(void) {
 
   window_stack_push(window, true /* Animated */);
   
-  fontHelvNewLight20 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_HELV_NEW_LIGHT_20));
- 
   window_layer = window_get_root_layer(window);
 
   // Register callbacks
@@ -439,16 +432,16 @@ void handle_init(void) {
   } 
   // Time of Day
   #ifdef PBL_PLATFORM_CHALK
-      text_time_layer = text_layer_create(GRect(1, 116, 180, 180-116));
-  #else //Aplite or Basalt
-      text_time_layer = text_layer_create(GRect(1, 116, 144, 168-116));
+      text_time_layer = text_layer_create(GRect(1, 40, 180, 70));
+  #else //Aplite or Basalt or Diorite
+      text_time_layer = text_layer_create(GRect(1, 25, 144, 70));
   #endif
     
   text_layer_set_text_alignment(text_time_layer, GTextAlignmentCenter);
     #ifdef PBL_PLATFORM_CHALK
-        text_layer_set_font(text_time_layer, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
+        text_layer_set_font(text_time_layer, fontRobotoBoldSubset49);
     #else //Aplite or Basalt
-        text_layer_set_font(text_time_layer, fonts_get_system_font(FONT_KEY_ROBOTO_BOLD_SUBSET_49));
+        text_layer_set_font(text_time_layer, fontRobotoBoldSubset49);
     #endif  
       
   text_layer_set_text_color(text_time_layer, GTextColorHold);
@@ -456,6 +449,24 @@ void handle_init(void) {
   
   layer_add_child(window_layer, text_layer_get_layer(text_time_layer));
   
+  // Seconds
+  #ifdef PBL_PLATFORM_CHALK
+      text_seconds_layer = text_layer_create(GRect(1, 100, 180, 180-116));
+  #else //Aplite or Basalt
+      text_seconds_layer = text_layer_create(GRect(1, 85, 144, 68));
+  #endif
+    
+  text_layer_set_text_alignment(text_seconds_layer, GTextAlignmentCenter);
+    #ifdef PBL_PLATFORM_CHALK
+        text_layer_set_font(text_seconds_layer, fontRobotoBoldSubset49);
+    #else //Aplite or Basalt
+        text_layer_set_font(text_seconds_layer, fontRobotoBoldSubset49);
+    #endif  
+      
+  text_layer_set_text_color(text_seconds_layer, GTextColorHold);
+  text_layer_set_background_color(text_seconds_layer, GBGColorHold);
+  
+  layer_add_child(window_layer, text_layer_get_layer(text_seconds_layer));
   
   tick_timer_service_subscribe(SECOND_UNIT, handle_tick);
 
